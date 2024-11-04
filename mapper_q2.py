@@ -1,13 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
 for line in sys.stdin:
     parts = line.strip().split(',')
-    if len(parts) > 2:  # Adjust index based on your dataset
-        lane = parts[2]  # Assuming this is the lane number or similar
-        hour = parts[1].split(':')[0]  # Extract the hour from a timestamp
-        vehicle_type = parts[3]  # Vehicle type
+    if len(parts) > 14:  # Ensure there are enough columns
+        hour = parts[4]  # Assuming the 'hour' column is at index 4
+        classname = parts[14]  # Vehicle type column
+        cosit = parts[0]  # Counter site code column
         
-        if vehicle_type == 'Car' and 'M50' in lane:  # Change condition as necessary
+        # Check if the vehicle type is 'CAR' and the location is on M50 (adjust 'cosit' range for junctions 03-17)
+        if classname == 'CAR' and 997 <= int(cosit) <= 1011:  # Replace with the range for M50 junctions
             print(f"{hour}\t1")

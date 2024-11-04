@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 from collections import defaultdict
@@ -9,7 +9,7 @@ for line in sys.stdin:
     hour, count = line.strip().split('\t')
     hourly_counts[hour] += int(count)
 
-# Find highest and lowest
+# Find the highest and lowest
 highest_hour = max(hourly_counts, key=hourly_counts.get)
 lowest_hour = min(hourly_counts, key=hourly_counts.get)
 
