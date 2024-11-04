@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
-
 import sys
 
-for line in sys.stdin:
-    try:
-        # Split the line into columns
-        parts = line.strip().split(',')
+def main():
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
         
-        # Ensure there are enough columns to avoid IndexError
-        if len(parts) > 18:  # Adjust the number based on the total columns in your data
-            classname = parts[14]  # Vehicle type (column O)
-            speed = parts[18]  # Speed (column S)
-            
-            # Check if the vehicle type is 'MOTORBIKE' and speed is valid
-            if classname == 'MOTORBIKE' and speed.isdigit():
-                print(f"motorbike\t{speed}")
-    except ValueError as e:
-        print(f"Error processing line: {line.strip()} - {e}", file=sys.stderr)
-    except IndexError as e:
-        print(f"Index error processing line: {line.strip()} - {e}", file=sys.stderr)
-    except Exception as e:
-        print(f"Unexpected error processing line: {line.strip()} - {e}", file=sys.stderr)
+        fields = line.split('\t')
+
+        # Ensure we have enough fields
+        if len(fields) < 20:
+            continue
+        
+        # Get vehicle type and speed
+        vehicle_type = fields[15]  # classname is at index 15
+        speed = fields[19]          # speed is at index 19
+
+        # Only consider motorbikes
+        if vehicle_type.strip() == "MOTORBIKE":
+            try:
+                speed_value = float(speed)
+                print(f"motorbike_speed\t1\t{speed_value}")  # Emit count and speed for motorbikes
+            except ValueError:
+                continue  # Skip any lines where speed is not a valid float
+
+if __name__ == "__main__":
+    main()
