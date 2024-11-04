@@ -4,6 +4,7 @@ import sys
 
 current_hour = None
 hourly_counts = {}
+print(0)
 
 for line in sys.stdin:
     hour, count = line.strip().split('\t')
