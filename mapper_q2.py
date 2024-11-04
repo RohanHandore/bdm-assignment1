@@ -7,29 +7,22 @@ def main():
         if not line:
             continue
         
-        fields = line.split('\t')  # Split by tab character
+        fields = line.split('\t')
 
-        # Ensure there are enough fields in the row
+        # Check if the fields list is long enough
         if len(fields) < 20:
             print("Skipping line due to insufficient fields:", line)  # Debug output
             continue
         
-        cosit = fields[0]           # Cosit
-        year = fields[1]            # Year
-        month = fields[2]           # Month
-        day = fields[3]             # Day
-        hour = fields[4]            # Hour
-        minute = fields[5]          # Minute
-        vehicle_type = fields[14]   # Vehicle type (assuming this is correct)
-        classname = fields[15]      # Class name
+        vehicle_type = fields[14]  # Make sure to check this index
 
         # Analysis 1: Count vehicle types
-        if vehicle_type and classname:
-            print(f"usage\t{classname}\t1")  # Emit vehicle type count
-        
-        # Analysis 2: Hourly flow for Cars on M50
-        if vehicle_type == "CAR":
-            print(f"flow\t{hour}\t1")  # Emit hourly flow for Cars
+        if vehicle_type:
+            print(f"Vehicle Type: {vehicle_type}")  # Debug output
+            if vehicle_type.strip() == "CAR":
+                print(f"flow\t{fields[4]}\t1")  # Emit hourly flow for Cars
+            else:
+                print(f"usage\t{fields[15]}\t1")  # Emit vehicle type count
 
 if __name__ == "__main__":
     main()
