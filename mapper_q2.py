@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 import sys
 
-# Mapper for the four analyses
 def main():
     for line in sys.stdin:
         line = line.strip()
-        if not line:  # Skip empty lines
+        if not line:
             continue
         
         fields = line.split('\t')  # Split by tab character
 
-        # Ensure there are enough fields in the row
-        if len(fields) < 20:
+        if len(fields) < 20:  # Ensure enough fields are present
             continue
         
-        # Unpack necessary fields
         cosit = fields[0]
         hour = fields[4]
         vehicle_type = fields[14]
@@ -27,11 +24,12 @@ def main():
         
         # Analysis 2: Hourly flow for Cars on M50
         if vehicle_type == "CAR":
-            print(f"flow\t{hour}\t1")
+            print(f"flow\t{hour}\t1")  # Emit hourly flow for Cars
 
         # Analysis 3: Average speed of Motorbikes
         if classname == "MOTORBIKE":
-            print(f"speed\t{cosit}\t{speed}")
+            if speed:  # Check if speed is present
+                print(f"speed\t{cosit}\t{speed}")
 
         # Analysis 4: Count HGVs
         if classname in ["HGV_RIG", "HGV_ART"]:
