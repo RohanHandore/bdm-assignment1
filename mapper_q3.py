@@ -10,7 +10,7 @@ for line in sys.stdin:
     # Ensure there are enough columns for processing
     if len(parts) > 19:  # Adjust based on the actual number of columns
         vehicle_type = parts[14]  # Adjust index based on your data
-        speed = parts[20]         # Adjust index based on your data
+        speed = parts[18]         # Adjust index based on your data
 
         if vehicle_type == "MBIKE":  # Filter for motorbikes
             try:
