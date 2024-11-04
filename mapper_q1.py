@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-
+# Mapper for Vehicle Type Percentage Calculation
 import sys
 
 for line in sys.stdin:
-    parts = line.strip().split(',')
-    if len(parts) > 3:  # Ensure there are enough columns
-        vehicle_type = parts[3]  # Adjust index based on your dataset
-        print(f"{vehicle_type}\t1")  # Emit vehicle type and count
+    data = line.strip().split(",")
+    # Extract the vehicle type (classname) from the correct index (14 for column O)
+    vehicle_type = data[14]
+    print(f"{vehicle_type}\t1")
