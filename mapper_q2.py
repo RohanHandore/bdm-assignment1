@@ -1,24 +1,28 @@
 #!/usr/bin/env python3
-
 import sys
 
-# Define junctions
-start_junction = 3
-end_junction = 17
-
+# Read input line by line
 for line in sys.stdin:
-    line = line.strip().replace('"', '').replace("'", "")
-    parts = [part.strip() for part in line.split(',')]
+    line = line.strip()
+    
+    # Split the line by commas
+    parts = line.split(",")
+    
+    # Check for the right number of parts
+    if len(parts) < 16:
+        print(f"Error processing line: {line}", file=sys.stderr)
+        continue
 
-    # Check if we have enough parts to process
-    if len(parts) > 14:  # Adjust according to your CSV
-        junction_number = int(parts[12])  # Assuming lane name is at index 12
-        vehicle_type = parts[14]  # Assuming vehicle type is at index 14
-        hour = parts[4]  # Assuming hour is at index 4
-        count = int(parts[15]) if len(parts) > 15 and parts[15].isdigit() else 0  # Assuming count is at index 15
+    try:
+        junction_number = int(parts[12])  # Junction number is at index 12
+        vehicle_type = parts[14]           # Vehicle type is at index 14
+        hour = int(parts[4])               # Hour is at index 4
+        count = int(parts[15]) if parts[15].isdigit() else 0  # Count is at index 15
+        
+        # Filter for cars and M50 junctions (between 3 and 17)
+        if vehicle_type == "CAR" and 3 <= junction_number <= 17:
+            # Output key-value pair: (hour, junction_number) => count
+            print(f"{hour},{junction_number}\t{count}")
 
-        # Filter for cars and within specified junctions
-        if vehicle_type == "CAR" and start_junction <= junction_number <= end_junction:
-            print(f"{hour}\t{count}")  # Emit hour and count
-    else:
-        print(f"Line skipped due to insufficient fields: {line}", file=sys.stderr)
+    except Exception as e:
+        print(f"Error processing line: {line} - {e}", file=sys.stderr)
