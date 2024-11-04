@@ -5,14 +5,16 @@ import sys
 current_vehicle_type = None
 current_count = 0
 total_speed = 0.0
+line_count = 0  # Counter for the first three lines of processed data
 
 for line in sys.stdin:
+    line_count += 1
+    if line_count <= 3:  # Print the first three lines
+        print(f"Processed Line {line_count}: {line.strip()}")
+
     vehicle_type, count, speed = line.strip().split('\t')
     count = int(count)
     speed = float(speed)
-    
-    # Debugging: Print received values
-    # print(f"DEBUG: Received Vehicle Type: {vehicle_type}, Count: {count}, Speed: {speed}")  # Uncomment for debugging
 
     if current_vehicle_type == vehicle_type:
         current_count += count
