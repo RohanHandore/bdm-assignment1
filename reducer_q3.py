@@ -12,9 +12,13 @@ for line in sys.stdin:
     if line_count <= 3:  # Print the first three lines
         print(f"Processed Line {line_count}: {line.strip()}")
 
-    vehicle_type, count, speed = line.strip().split('\t')
-    count = int(count)
-    speed = float(speed)
+    try:
+        vehicle_type, count, speed = line.strip().split('\t')
+        count = int(count)
+        speed = float(speed)
+    except ValueError as e:
+        print(f"Error parsing line '{line.strip()}': {e}")
+        continue  # Skip this line if parsing fails
 
     if current_vehicle_type == vehicle_type:
         current_count += count
