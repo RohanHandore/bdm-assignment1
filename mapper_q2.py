@@ -2,25 +2,34 @@
 
 import sys
 
-# Read input line by line
-for line in sys.stdin:
-    # Strip whitespace and split by comma
-    parts = line.strip().split(',')
-    
-    # Ensure there are enough columns for processing
-    if len(parts) > 4:  # Adjust based on the number of columns
-        hour = parts[4]  # Hour index (column 4)
-        vehicle_type = parts[14]  # Vehicle type index (class column)
-        lane_name = parts[11]  # Lane name index (lanename column)
+# Set of valid counter IDs between junctions 03 and 17
+valid_counters = {
+    "1113", "1500", "1501", "1502", "1503", "1504", "1505", "1506", "1507",
+    "1508", "1509", "1812", "15010", "15011", "15012", "201081", "201082"
+}
 
-        # Check if the vehicle is a car and in the specified lane range
-        if vehicle_type == "CAR" and ("Junction 3" in lane_name or "Junction 4" in lane_name or
-                                       "Junction 5" in lane_name or "Junction 6" in lane_name or
-                                       "Junction 7" in lane_name or "Junction 8" in lane_name or
-                                       "Junction 9" in lane_name or "Junction 10" in lane_name or
-                                       "Junction 11" in lane_name or "Junction 12" in lane_name or
-                                       "Junction 13" in lane_name or "Junction 14" in lane_name or
-                                       "Junction 15" in lane_name or "Junction 16" in lane_name or
-                                       "Junction 17" in lane_name):
-            # Emit hour and count of 1
-            print(f"{hour}\t1")
+for line in sys.stdin:
+    # Skip empty lines
+    if not line.strip():
+        continue
+
+    parts = line.strip().split(',')
+
+    # Check for header and skip it
+    if parts[0].replace('"', '').strip().lower() == 'counter_id':
+        continue
+
+    if len(parts) > 14:
+        try:
+            # Extract and clean counter ID, vehicle class, and hour
+            counter_id = parts[0].replace('"', '').strip()
+            vehicle_class = parts[14].replace('"', '').strip()
+            hour = parts[4].replace('"', '').strip()
+
+            # Check if counter ID is valid and vehicle is a car
+            if counter_id in valid_counters and vehicle_class == 'CAR':
+                composite_key = f"{hour}\t{counter_id}"
+                print(f"{composite_key}\t1")
+        except ValueError:
+            # Handle any parsing issues
+            continue
