@@ -2,24 +2,28 @@
 
 import sys
 
-current_hour = None
 hourly_counts = {}
-print(0)
 
 for line in sys.stdin:
-    hour, count = line.strip().split('\t')
-    count = int(count)
+    line = line.strip()
+    if line:  # Only process non-empty lines
+        try:
+            hour, count = line.split('\t')
+            count = int(count)
+            if hour in hourly_counts:
+                hourly_counts[hour] += count  # Aggregate counts
+            else:
+                hourly_counts[hour] = count
+        except ValueError as e:
+            print(f"Error processing line: {line} - {e}", file=sys.stderr)
+            continue  # Skip to the next line if there's an error
 
-    if hour in hourly_counts:
-        hourly_counts[hour] += count
-    else:
-        hourly_counts[hour] = count
-
-# Now calculate the highest and lowest hourly flows
+# Find the highest and lowest hourly flows
 if hourly_counts:
-    highest_hour = max(hourly_counts, key=hourly_counts.get)
-    lowest_hour = min(hourly_counts, key=hourly_counts.get)
-    print(f"Highest Hourly Flow of Cars: {hourly_counts[highest_hour]} at hour {highest_hour}")
-    print(f"Lowest Hourly Flow of Cars: {hourly_counts[lowest_hour]} at hour {lowest_hour}")
+    highest_hour = max(hourly_counts.items(), key=lambda item: item[1])
+    lowest_hour = min(hourly_counts.items(), key=lambda item: item[1])
+
+    print(f"Highest flow: Hour: {highest_hour[0]}, Count: {highest_hour[1]}")
+    print(f"Lowest flow: Hour: {lowest_hour[0]}, Count: {lowest_hour[1]}")
 else:
-    print("No valid car count data found.")
+    print("No data processed.")

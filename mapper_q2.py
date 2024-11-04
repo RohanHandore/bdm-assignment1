@@ -2,21 +2,23 @@
 
 import sys
 
+# Define junctions
+start_junction = 3
+end_junction = 17
+
 for line in sys.stdin:
-    # Strip whitespace and remove quotes
     line = line.strip().replace('"', '').replace("'", "")
-    parts = [part.strip() for part in line.split('\t')]  # Using tab as a delimiter
+    parts = [part.strip() for part in line.split(',')]
 
-    # Ensure there are enough columns for processing
-    if len(parts) > 19:  # Adjust based on the actual number of columns
-        vehicle_type = parts[14]  # 'class' (vehicle type)
-        hour = parts[4]            # 'hour'
-        count = parts[10]          # Assuming 'lane' is count
+    # Check if we have enough parts to process
+    if len(parts) > 14:  # Adjust according to your CSV
+        junction_number = int(parts[12])  # Assuming lane name is at index 12
+        vehicle_type = parts[14]  # Assuming vehicle type is at index 14
+        hour = parts[4]  # Assuming hour is at index 4
+        count = int(parts[15]) if len(parts) > 15 and parts[15].isdigit() else 0  # Assuming count is at index 15
 
-        # Filter for Cars
-        if vehicle_type == "CAR":  # We are only interested in Cars
-            try:
-                count_value = int(count)  # Convert count to integer
-                print(f"{hour}\t{count_value}")  # Output hour and count for reducer
-            except ValueError:
-                continue  # Skip lines with invalid count values
+        # Filter for cars and within specified junctions
+        if vehicle_type == "CAR" and start_junction <= junction_number <= end_junction:
+            print(f"{hour}\t{count}")  # Emit hour and count
+    else:
+        print(f"Line skipped due to insufficient fields: {line}", file=sys.stderr)
