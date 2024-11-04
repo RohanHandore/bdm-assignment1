@@ -15,7 +15,7 @@ for line in sys.stdin:
         current_count += count
         total_speed += speed
     else:
-        if current_vehicle_type == "motorbike":
+        if current_vehicle_type == "MBIKE":
             # Calculate and print average speed for motorbikes
             if current_count > 0:
                 average_speed = total_speed / current_count
@@ -25,6 +25,6 @@ for line in sys.stdin:
         total_speed = speed
 
 # Print the average speed for the last vehicle type if it was a motorbike
-if current_vehicle_type == "motorbike" and current_count > 0:
+if current_vehicle_type == "MBIKE" and current_count > 0:
     average_speed = total_speed / current_count
     print(f"Average Speed of {current_vehicle_type.capitalize()}: {average_speed:.2f}")
