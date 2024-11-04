@@ -38,7 +38,7 @@ def main():
         print(f"Highest flow hour for Cars: {max_flow_hour} with {flow_counts[max_flow_hour]} counts")
         print(f"Lowest flow hour for Cars: {min_flow_hour} with {flow_counts[min_flow_hour]} counts")
     else:
-        print("No flow data available.")
+        print("No flow data available.")  # Debug output
 
 if __name__ == "__main__":
     main()
