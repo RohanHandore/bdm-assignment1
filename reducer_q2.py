@@ -2,26 +2,26 @@
 import sys
 from collections import defaultdict
 
-counts = defaultdict(int)
+flow_counts = defaultdict(int)
 
-for line in sys.stdin:
-    print(f"DEBUG: Input to reducer - {line.strip()}", file=sys.stderr)
+for input_line in sys.stdin:
+    print(f"DEBUG: Input to reducer - {input_line.strip()}", file=sys.stderr)
 
-    line = line.strip()
-    if line:  # Only process non-empty lines
+    input_line = input_line.strip()
+    if input_line:  # Only process non-empty lines
         try:
-            composite_key, count = line.split('\t')
-            counts[composite_key] += int(count)
-            print(f"DEBUG: Updated count for {composite_key} - {counts[composite_key]}", file=sys.stderr)
-        except ValueError as e:
-            print(f"DEBUG: Error processing line: {line} - {e}", file=sys.stderr)
+            key_combination, flow_count = input_line.split('\t')
+            flow_counts[key_combination] += int(flow_count)
+            print(f"DEBUG: Updated count for {key_combination} - {flow_counts[key_combination]}", file=sys.stderr)
+        except ValueError as error_message:
+            print(f"DEBUG: Error processing line: {input_line} - {error_message}", file=sys.stderr)
             continue  # Skip to the next line if there's an error
 
-# Find max and min counts
-max_key, max_value = max(counts.items(), key=lambda item: item[1], default=(None, float('-inf')))
-min_key, min_value = min(counts.items(), key=lambda item: item[1], default=(None, float('inf')))
+# Find max and min flow counts
+max_combination, max_flow = max(flow_counts.items(), key=lambda item: item[1], default=(None, float('-inf')))
+min_combination, min_flow = min(flow_counts.items(), key=lambda item: item[1], default=(None, float('inf')))
 
 # Print results
-if max_key and min_key:
-    print(f"Max Hourly Flow: {max_value} at {max_key}")
-    print(f"Min Hourly Flow: {min_value} at {min_key}")
+if max_combination and min_combination:
+    print(f"Max Hourly Flow: {max_flow} at {max_combination}")
+    print(f"Min Hourly Flow: {min_flow} at {min_combination}")

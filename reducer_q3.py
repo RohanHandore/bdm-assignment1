@@ -2,19 +2,19 @@
 
 import sys
 
-total_speed = 0.0
-count = 0
+cumulative_speed = 0.0
+speed_count = 0
 
-for line in sys.stdin:
+for input_line in sys.stdin:
     try:
-        speed = float(line.strip())
-        total_speed += speed
-        count += 1
+        speed_value = float(input_line.strip())
+        cumulative_speed += speed_value
+        speed_count += 1
     except ValueError:
         continue  # Skip invalid values
 
-if count > 0:
-    average_speed = total_speed / count
-    print(f"Average Speed of Motorbike: {average_speed:.2f}")
+if speed_count > 0:
+    average_motorbike_speed = cumulative_speed / speed_count
+    print(f"Average Speed of Motorbike: {average_motorbike_speed:.2f}")
 else:
     print("No valid motorbike speed data found.")

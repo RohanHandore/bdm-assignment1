@@ -2,28 +2,28 @@
 
 import sys
 
-current_vehicle_type = None
-current_count = 0
-total_count = 0
+previous_vehicle = None
+vehicle_count = 0
+aggregate_count = 0
 
-for line in sys.stdin:
-    vehicle_type, count = line.strip().split('\t')
-    count = int(count)
+for input_line in sys.stdin:
+    vehicle_category, count_value = input_line.strip().split('\t')
+    count_value = int(count_value)
     
-    if current_vehicle_type == vehicle_type:
-        current_count += count
+    if previous_vehicle == vehicle_category:
+        vehicle_count += count_value
     else:
-        if current_vehicle_type:
-            print(f"{current_vehicle_type}\t{current_count}")
-        current_vehicle_type = vehicle_type
-        current_count = count
+        if previous_vehicle:
+            print(f"{previous_vehicle}\t{vehicle_count}")
+        previous_vehicle = vehicle_category
+        vehicle_count = count_value
 
-    total_count += count
+    aggregate_count += count_value
 
 # Print the last vehicle type
-if current_vehicle_type == vehicle_type:
-    print(f"{current_vehicle_type}\t{current_count}")
+if previous_vehicle == vehicle_category:
+    print(f"{previous_vehicle}\t{vehicle_count}")
 
-# Print percentages
-if total_count > 0:
-    print(f"Total Count: {total_count}")
+# Print total count
+if aggregate_count > 0:
+    print(f"Total Count: {aggregate_count}")
