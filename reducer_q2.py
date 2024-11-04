@@ -2,43 +2,45 @@
 import sys
 
 def main():
-    usage_counts = {}
-    flow_counts = {}
+    current_key = None
+    current_count = 0
+    flow_data = {}  # For storing flow data
 
     for line in sys.stdin:
         line = line.strip()
         if not line:
             continue
         
-        parts = line.split('\t')
-        key_type = parts[0]
+        # Debug print to show the current line being processed
+        print("Reducer processing line:", line)  # Debug output
         
-        # Analysis 1: Vehicle usage counts
-        if key_type == "usage":
-            classname = parts[1]
-            count = int(parts[2])
-            usage_counts[classname] = usage_counts.get(classname, 0) + count
-
-        # Analysis 2: Flow counts for Cars
-        elif key_type == "flow":
+        parts = line.split('\t')
+        
+        if len(parts) != 3:
+            print("Skipping line due to incorrect format:", line)  # Debug output
+            continue
+        
+        key, value = parts[0], int(parts[2])
+        
+        # Count flow data
+        if key == "flow":
             hour = parts[1]
-            count = int(parts[2])
-            flow_counts[hour] = flow_counts.get(hour, 0) + count
+            flow_data[hour] = flow_data.get(hour, 0) + value
+        elif key == "usage":
+            current_key = parts[1]
+            current_count += value
 
-    # Output for vehicle usage percentages
-    total_usage = sum(usage_counts.values())
-    for classname, count in usage_counts.items():
-        percentage = (count / total_usage) * 100 if total_usage > 0 else 0
-        print(f"Vehicle type: {classname}, Usage: {percentage:.2f}%")
-
-    # Output for hourly flows (highest and lowest)
-    if flow_counts:
-        max_flow_hour = max(flow_counts, key=flow_counts.get)
-        min_flow_hour = min(flow_counts, key=flow_counts.get)
-        print(f"Highest flow hour for Cars: {max_flow_hour} with {flow_counts[max_flow_hour]} counts")
-        print(f"Lowest flow hour for Cars: {min_flow_hour} with {flow_counts[min_flow_hour]} counts")
+    # Output the collected flow data
+    if flow_data:
+        print("Flow Data:")
+        for hour, count in flow_data.items():
+            print(f"Hour: {hour}, Count: {count}")
     else:
-        print("No flow data available.")  # Debug output
+        print("No flow data available.")
+
+    # If you want to output the usage data
+    if current_key:
+        print(f"Usage Data: {current_key} -> {current_count}")
 
 if __name__ == "__main__":
     main()
