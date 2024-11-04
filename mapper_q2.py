@@ -9,16 +9,12 @@ def main():
         
         fields = line.split('\t')
 
-        # Check if the fields list is long enough
+        # Ensure we have enough fields
         if len(fields) < 20:
-            print("Skipping line due to insufficient fields:", line)  # Debug output
             continue
         
         # Get vehicle type
         vehicle_type = fields[15]  # classname is at index 15
-        
-        # Debug print to show the current line being processed
-        print("Processing line:", line)  # Debug output
         
         # Count vehicle types
         if vehicle_type.strip() == "CAR":
