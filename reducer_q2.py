@@ -8,6 +8,7 @@ hourly_count = defaultdict(int)
 # Read input from standard input (mapper output)
 for line in sys.stdin:
     try:
+        sys.stderr.write(f"Reducer received: {line}")  # Debug statement
         hour, count = line.strip().split("\t")
         count = int(count)
         hourly_count[hour] += count
@@ -23,4 +24,5 @@ if hourly_count:
     print(f"Highest Hourly Flow: Hour {highest_hour}, Count {hourly_count[highest_hour]}")
     print(f"Lowest Hourly Flow: Hour {lowest_hour}, Count {hourly_count[lowest_hour]}")
 else:
+    sys.stderr.write("No valid data processed.\n")
     print("No valid data processed.")
