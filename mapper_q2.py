@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 import sys
 
+# Define the junctions for M50 between junction 03 and junction 17
+junctions = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"]
+
 # Read input line by line
 for line in sys.stdin:
     line = line.strip()
-    
-    # Split the line by commas
-    parts = line.split(",")
-    
-    # Check for the right number of parts
-    if len(parts) < 16:
-        print(f"Error processing line: {line}", file=sys.stderr)
+
+    # Skip the header line
+    if line.startswith("cosit"):
         continue
 
+    # Split the line into columns
+    columns = line.split("\t")
+    
+    # Extract the relevant columns
     try:
-        junction_number = int(parts[12])  # Junction number is at index 12
-        vehicle_type = parts[14]           # Vehicle type is at index 14
-        hour = int(parts[4])               # Hour is at index 4
-        count = int(parts[15]) if parts[15].isdigit() else 0  # Count is at index 15
+        hour = columns[4]  # hour column (index 4)
+        lane_name = columns[11]  # lanename column (index 11)
+        vehicle_class = columns[15]  # classname column (index 15)
         
-        # Filter for cars and M50 junctions (between 3 and 17)
-        if vehicle_type == "CAR" and 3 <= junction_number <= 17:
-            # Output key-value pair: (hour, junction_number) => count
-            print(f"{hour},{junction_number}\t{count}")
-
-    except Exception as e:
-        print(f"Error processing line: {line} - {e}", file=sys.stderr)
+        # Check if the vehicle is a car and the lane is in the M50 range
+        if vehicle_class == "CAR" and any(f"Junction {junction}" in lane_name for junction in junctions):
+            # Emit the hour with a count of 1
+            print(f"{hour}\t1")
+    except IndexError:
+        continue
