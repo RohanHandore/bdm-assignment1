@@ -9,8 +9,11 @@ counts = defaultdict(int)
 for line in sys.stdin:
     line = line.strip()
     if line:
-        lane_name, count = line.split('\t')
-        counts[lane_name] += int(count)
+        try:
+            lane_name, count = line.split('\t')
+            counts[lane_name] += int(count)
+        except ValueError as e:
+            print(f"Error processing line: {line} - {e}")  # Debug output
 
 # Sort locations by count and take top 10
 top_locations = sorted(counts.items(), key=lambda item: item[1], reverse=True)[:10]
