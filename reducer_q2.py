@@ -1,41 +1,21 @@
-#!/usr/bin/env python3
 import sys
 
-def main():
-    current_key = None
-    current_count = 0
-    flow_data = {}  # For storing flow data
+hourly_count = {}
 
-    for line in sys.stdin:
-        line = line.strip()
-        if not line:
-            continue
-        
-        parts = line.split('\t')
-        
-        if len(parts) != 3:
-            continue
-        
-        key, value = parts[0], int(parts[2])
-        
-        # Count flow data
-        if key == "flow":
-            hour = parts[1]
-            flow_data[hour] = flow_data.get(hour, 0) + value
-        elif key == "usage":
-            current_key = parts[1]
-            current_count += value
+# Read input line-by-line from the mapper output
+for line in sys.stdin:
+    hour, count = line.strip().split("\t")
+    count = int(count)
 
-    # Output the collected flow data
-    if flow_data:
-        for hour, count in flow_data.items():
-            print(f"Hour: {hour}, Count: {count}")
+    if hour in hourly_count:
+        hourly_count[hour] += count
     else:
-        print("No flow data available.")
+        hourly_count[hour] = count
 
-    # Output the usage data if any
-    if current_key:
-        print(f"Usage Data: {current_key} -> {current_count}")
+# Find the highest and lowest hourly flow
+highest_hour = max(hourly_count, key=hourly_count.get)
+lowest_hour = min(hourly_count, key=hourly_count.get)
 
-if __name__ == "__main__":
-    main()
+# Print the highest and lowest hourly flows
+print(f"Highest Hourly Flow: Hour {highest_hour}, Count {hourly_count[highest_hour]}")
+print(f"Lowest Hourly Flow: Hour {lowest_hour}, Count {hourly_count[lowest_hour]}")

@@ -1,27 +1,20 @@
-#!/usr/bin/env python3
 import sys
 
-def main():
-    for line in sys.stdin:
-        line = line.strip()
-        if not line:
-            continue
-        
-        fields = line.split('\t')
+def parse_line(line):
+    fields = line.strip().split(",")
+    if len(fields) > 12:
+        try:
+            # Extract relevant fields: junction, vehicle type, and time
+            junction = int(fields[0].strip('"'))
+            vehicle_type = fields[14].strip('"')  # Column that indicates vehicle type
+            hour = fields[4].strip('"')  # Column that indicates the hour
 
-        # Ensure we have enough fields
-        if len(fields) < 20:
-            continue
-        
-        # Get vehicle type
-        vehicle_type = fields[15]  # classname is at index 15
-        
-        # Count vehicle types
-        if vehicle_type.strip() == "CAR":
-            hour = fields[4]  # hour is at index 4
-            print(f"flow\t{hour}\t1")  # Emit hourly flow for Cars
-        else:
-            print(f"usage\t{vehicle_type.strip()}\t1")  # Emit vehicle type count
+            # Check if the record is for cars and is between junctions 03-17
+            if 3 <= junction <= 17 and vehicle_type == 'CAR':
+                # Emit the hour and count of 1 for the vehicle
+                print(f"{hour}\t1")
+        except ValueError:
+            pass  # Ignore invalid lines
 
-if __name__ == "__main__":
-    main()
+for line in sys.stdin:
+    parse_line(line)
