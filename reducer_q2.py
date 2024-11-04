@@ -1,39 +1,27 @@
 #!/usr/bin/env python3
-
 import sys
 from collections import defaultdict
 
-hourly_counts = defaultdict(int)
+counts = defaultdict(int)
 
 for line in sys.stdin:
+    print(f"DEBUG: Input to reducer - {line.strip()}", file=sys.stderr)
+
     line = line.strip()
-    if line:
+    if line:  # Only process non-empty lines
         try:
-            composite_key, count = line.rsplit('\t', 1)
-            hourly_counts[composite_key] += int(count)
-        except ValueError:
-            continue  # Skip lines with parsing issues
+            composite_key, count = line.split('\t')
+            counts[composite_key] += int(count)
+            print(f"DEBUG: Updated count for {composite_key} - {counts[composite_key]}", file=sys.stderr)
+        except ValueError as e:
+            print(f"DEBUG: Error processing line: {line} - {e}", file=sys.stderr)
+            continue  # Skip to the next line if there's an error
 
-# Initialize variables for min and max
-min_count = float('inf')
-max_count = float('-inf')
-min_key = None
-max_key = None
-
-# Identify the min and max hourly flows
-for key, count in hourly_counts.items():
-    if count > max_count:
-        max_count = count
-        max_key = key
-    if count < min_count:
-        min_count = count
-        min_key = key
+# Find max and min counts
+max_key, max_value = max(counts.items(), key=lambda item: item[1], default=(None, float('-inf')))
+min_key, min_value = min(counts.items(), key=lambda item: item[1], default=(None, float('inf')))
 
 # Print results
-print("Lowest Hourly Flow:")
-if min_key:
-    print(f"{min_key}\t{min_count}")
-
-print("Highest Hourly Flow:")
-if max_key:
-    print(f"{max_key}\t{max_count}")
+if max_key and min_key:
+    print(f"Max Hourly Flow: {max_value} at {max_key}")
+    print(f"Min Hourly Flow: {min_value} at {min_key}")
