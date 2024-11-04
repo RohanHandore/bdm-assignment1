@@ -3,30 +3,22 @@
 import sys
 
 current_hour = None
-current_count = 0
-hourly_counts = []
+hourly_counts = {}
 
 for line in sys.stdin:
     hour, count = line.strip().split('\t')
     count = int(count)
-    
-    if current_hour == hour:
-        current_count += count
+
+    if hour in hourly_counts:
+        hourly_counts[hour] += count
     else:
-        if current_hour:
-            hourly_counts.append(current_count)
-        current_hour = hour
-        current_count = count
+        hourly_counts[hour] = count
 
-# Append the last hour count
-if current_hour is not None:
-    hourly_counts.append(current_count)
-
-# Calculate highest and lowest hourly flows
+# Now calculate the highest and lowest hourly flows
 if hourly_counts:
-    highest_flow = max(hourly_counts)
-    lowest_flow = min(hourly_counts)
-    print(f"Highest Hourly Flow of Cars: {highest_flow}")
-    print(f"Lowest Hourly Flow of Cars: {lowest_flow}")
+    highest_hour = max(hourly_counts, key=hourly_counts.get)
+    lowest_hour = min(hourly_counts, key=hourly_counts.get)
+    print(f"Highest Hourly Flow of Cars: {hourly_counts[highest_hour]} at hour {highest_hour}")
+    print(f"Lowest Hourly Flow of Cars: {hourly_counts[lowest_hour]} at hour {lowest_hour}")
 else:
     print("No valid car count data found.")
