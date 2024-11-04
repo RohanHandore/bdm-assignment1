@@ -1,26 +1,20 @@
 #!/usr/bin/env python3
-
 import sys
-from collections import defaultdict
 
-hourly_counts = defaultdict(int)
+current_hour = None
+current_count = 0
 
 for line in sys.stdin:
-    try:
-        hour, count = line.strip().split('\t')
-        count = int(count)  # Ensure count is an integer
-        hourly_counts[hour] += count
-    except ValueError as e:
-        print(f"Error processing line: {line.strip()} - {e}", file=sys.stderr)
-    except Exception as e:
-        print(f"Unexpected error processing line: {line.strip()} - {e}", file=sys.stderr)
+    hour, count = line.strip().split('\t')
+    count = int(count)
 
-# Check if there are any valid hourly counts
-if hourly_counts:
-    highest_hour = max(hourly_counts, key=hourly_counts.get)
-    lowest_hour = min(hourly_counts, key=hourly_counts.get)
+    if current_hour == hour:
+        current_count += count
+    else:
+        if current_hour:
+            print(f"{current_hour}\t{current_count}")
+        current_hour = hour
+        current_count = count
 
-    print(f"Highest Hour: {highest_hour}, Count: {hourly_counts[highest_hour]}")
-    print(f"Lowest Hour: {lowest_hour}, Count: {hourly_counts[lowest_hour]}")
-else:
-    print("No valid data found for processing.")
+if current_hour:
+    print(f"{current_hour}\t{current_count}")
