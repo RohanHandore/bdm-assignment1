@@ -11,13 +11,11 @@ for line in sys.stdin:
         count = int(count)  # Ensure count is an integer
         hourly_counts[hour] += count
     except ValueError as e:
-        # Handle errors during count conversion or splitting
         print(f"Error processing line: {line.strip()} - {e}", file=sys.stderr)
     except Exception as e:
-        # Handle any other unexpected errors
         print(f"Unexpected error processing line: {line.strip()} - {e}", file=sys.stderr)
 
-# Find the highest and lowest counts safely
+# Check if there are any valid hourly counts
 if hourly_counts:
     highest_hour = max(hourly_counts, key=hourly_counts.get)
     lowest_hour = min(hourly_counts, key=hourly_counts.get)
