@@ -7,9 +7,9 @@ def parse_line(line):
         fields = line.strip().split(",")
         if len(fields) > 14:
             # Extract relevant fields: junction, vehicle type, and hour
-            junction = int(fields[0].strip('"'))
-            vehicle_type = fields[14].strip('"')  # Column for vehicle type
-            hour = fields[4].strip('"')  # Column for hour
+            junction = int(fields[0])
+            vehicle_type = fields[14]  # Column for vehicle type
+            hour = fields[4]  # Column for hour
 
             # Debug: Print the parsed fields for inspection
             sys.stderr.write(f"Parsed fields - Junction: {junction}, Vehicle Type: {vehicle_type}, Hour: {hour}\n")
