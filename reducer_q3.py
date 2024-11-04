@@ -1,14 +1,24 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
 total_speed = 0
-count = 0
+motorbike_count = 0
 
 for line in sys.stdin:
-    _, speed = line.strip().split('\t')
-    total_speed += float(speed)
-    count += 1
+    try:
+        _, speed = line.strip().split('\t')
+        speed = float(speed)
+        total_speed += speed
+        motorbike_count += 1
+    except ValueError as e:
+        print(f"Error processing line: {line.strip()} - {e}", file=sys.stderr)
+    except Exception as e:
+        print(f"Unexpected error processing line: {line.strip()} - {e}", file=sys.stderr)
 
-average_speed = total_speed / count if count > 0 else 0
-print(f"Average Speed of Motorbikes: {average_speed}")
+# Calculate and print the average speed
+if motorbike_count > 0:
+    average_speed = total_speed / motorbike_count
+    print(f"Average Speed of Motorbikes: {average_speed:.2f}")
+else:
+    print("No valid motorbike data found for processing.")

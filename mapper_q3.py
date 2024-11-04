@@ -1,12 +1,23 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
 for line in sys.stdin:
-    parts = line.strip().split(',')
-    if len(parts) > 5:  # Ensure there are enough columns
-        vehicle_type = parts[3]  # Vehicle type
-        speed = parts[5]  # Assuming speed is in this index
-
-        if vehicle_type == 'Motorbike':
-            print(f"motorbike\t{speed}")  # Emit speed for motorbikes
+    try:
+        # Split the line into columns
+        parts = line.strip().split(',')
+        
+        # Ensure there are enough columns to avoid IndexError
+        if len(parts) > 18:  # Adjust the number based on the total columns in your data
+            classname = parts[14]  # Vehicle type (column O)
+            speed = parts[18]  # Speed (column S)
+            
+            # Check if the vehicle type is 'MOTORBIKE' and speed is valid
+            if classname == 'MOTORBIKE' and speed.isdigit():
+                print(f"motorbike\t{speed}")
+    except ValueError as e:
+        print(f"Error processing line: {line.strip()} - {e}", file=sys.stderr)
+    except IndexError as e:
+        print(f"Index error processing line: {line.strip()} - {e}", file=sys.stderr)
+    except Exception as e:
+        print(f"Unexpected error processing line: {line.strip()} - {e}", file=sys.stderr)
