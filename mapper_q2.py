@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
+
 import sys
 
-# Debug: to check if mapper is reading input correctly
-print("Debug: Starting mapper...", file=sys.stderr)
-
 for line in sys.stdin:
-    try:
-        print(f"Debug: Processing line: {line.strip()}", file=sys.stderr)
-        fields = line.strip().split(',')
-        
-        # Check if the line has enough fields
-        if len(fields) >= 14:
-            cosit = fields[0].strip('"')
-            junction_number = int(cosit[7:9])  # Extracting junction number from 'cosit'
-            vehicle_class = fields[14].strip().upper()
-            hour = int(fields[4].strip('"'))
-            
-            if 3 <= junction_number <= 17 and vehicle_class == "CAR":
-                print(f"{hour}\t1")
-            else:
-                print(f"Debug: Skipped line due to junction or vehicle class: {line.strip()}", file=sys.stderr)
-        else:
-            print(f"Debug: Line has insufficient fields: {line.strip()}", file=sys.stderr)
-    except Exception as e:
-        print(f"Debug: Error processing line '{line.strip()}': {e}", file=sys.stderr)
+    # Strip whitespace and remove quotes
+    line = line.strip().replace('"', '').replace("'", "")
+    parts = [part.strip() for part in line.split(',')]
+    
+    # Ensure there are enough columns for processing
+    if len(parts) > 19:  # Adjust based on the actual number of columns
+        vehicle_type = parts[14]  # Adjust index based on your data
+        hour = parts[4]            # Assuming hour is at index 4
+        count = parts[10]          # Assuming count is at index 10
+
+        # Filter for Cars and the specified junctions
+        if vehicle_type == "CAR" and "M50" in parts[13]:  # Adjust index based on your data
+            try:
+                count_value = int(count)  # Convert count to integer
+                print(f"{hour}\t{count_value}")  # Output hour and count for reducer
+            except ValueError:
+                continue  # Skip lines with invalid count values

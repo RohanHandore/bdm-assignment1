@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
+
 import sys
 
-# Debug: to check if reducer is starting
-print("Debug: Starting reducer...", file=sys.stderr)
-
-hourly_counts = {}
+current_hour = None
+current_count = 0
+hourly_counts = []
 
 for line in sys.stdin:
-    try:
-        print(f"Debug: Processing line: {line.strip()}", file=sys.stderr)
-        hour, count = line.strip().split('\t')
-        hour = int(hour)
-        count = int(count)
-        
-        if hour in hourly_counts:
-            hourly_counts[hour] += count
-        else:
-            hourly_counts[hour] = count
-    except Exception as e:
-        print(f"Debug: Error processing line '{line.strip()}': {e}", file=sys.stderr)
-
-# Finding the highest and lowest hourly flows
-if hourly_counts:
-    max_hour = max(hourly_counts, key=hourly_counts.get)
-    min_hour = min(hourly_counts, key=hourly_counts.get)
+    hour, count = line.strip().split('\t')
+    count = int(count)
     
-    print(f"Highest Hourly Flow: Hour {max_hour} with {hourly_counts[max_hour]} cars")
-    print(f"Lowest Hourly Flow: Hour {min_hour} with {hourly_counts[min_hour]} cars")
+    if current_hour == hour:
+        current_count += count
+    else:
+        if current_hour:
+            hourly_counts.append(current_count)
+        current_hour = hour
+        current_count = count
+
+# Append the last hour count
+if current_hour is not None:
+    hourly_counts.append(current_count)
+
+# Calculate highest and lowest hourly flows
+if hourly_counts:
+    highest_flow = max(hourly_counts)
+    lowest_flow = min(hourly_counts)
+    print(f"Highest Hourly Flow of Cars: {highest_flow}")
+    print(f"Lowest Hourly Flow of Cars: {lowest_flow}")
 else:
-    print("Debug: No data found in hourly counts.", file=sys.stderr)
+    print("No valid car count data found.")
